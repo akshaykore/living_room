@@ -110,6 +110,9 @@ class Bot(object):
                 elif intent == 'hello': #hello to AI
                     self.__hello_action()
                
+                elif intent == 'shut down': #hello to AI
+                    self.__shutdown_action()
+               
                 elif intent == 'music': #Playing Music
                     self.__music_action()
                     
@@ -203,6 +206,17 @@ class Bot(object):
         GPIO.output(f, GPIO.LOW)
         GPIO.output(g, GPIO.LOW)
         GPIO.output(laptop_charger_gpio, GPIO.LOW)
+        
+    def __shutdown_action(self):
+        print("everything down!")
+        GPIO.output(fan_gpio, GPIO.HIGH)
+        GPIO.output(light_gpio, GPIO.HIGH)
+        GPIO.output(lamp_gpio, GPIO.HIGH)
+        GPIO.output(charger_gpio, GPIO.HIGH)
+        GPIO.output(toaster_gpio, GPIO.HIGH)
+        GPIO.output(f, GPIO.HIGH)
+        GPIO.output(g, GPIO.HIGH)
+        GPIO.output(laptop_charger_gpio, GPIO.HIGH)
         
         
 
