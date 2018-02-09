@@ -36,8 +36,11 @@ light_gpio=3
 lamp_gpio=17
 charger_gpio=27
 toaster_gpio=22
-f=22
-pinList = [fan_gpio, light_gpio, lamp_gpio, charger_gpio, toaster_gpio, f]
+f=22 #TO BE USED FOR DIMMER LIGHT
+g=10 #TO BE USED FOR DIMMER OF DEVICE
+laptop_charger_gpio=9
+
+pinList = [fan_gpio, light_gpio, lamp_gpio, charger_gpio, toaster_gpio, f, g, laptop_charger_gpio]
 
 # loop through pins and set mode and state to 'low'
 
@@ -106,9 +109,10 @@ class Bot(object):
 
                 elif intent == 'hello': #hello to AI
                     self.__hello_action()
-
+               
                 elif intent == 'music': #Playing Music
                     self.__music_action()
+                    
                 elif intent == 'stop playing': #Stop playing music
                     self.__stop_playing_action()
 
@@ -119,15 +123,19 @@ class Bot(object):
 
                 elif intent == 'dim off': #Stop dimmer
                     self.__dim_off_action()
+                    
                 elif intent == 'dim low': #dimmer 25
                     self.__dim_low_action()
+                    
                 elif intent == 'dim high': #dimmer 75
                     self.__dim_high_action()
+                    
                 elif intent == 'dim full': #dimmer 100
                     self.__dim_full_action()
 
                 elif intent == 'lights': #Switch on lights
                     self.__lights_on_action()
+                    
                 elif intent == 'lights off': #Switch off Lights
                     self.__lights_off_action()
 
@@ -139,7 +147,19 @@ class Bot(object):
 
                 elif intent == 'goodbye': #Goodbye routine
                     self.__goodbye_action()
-
+                    
+                elif intent == 'I am home': #i am home to AI
+                    self.__iamhome_action()
+                    
+                elif intent == 'study time': #study time to AI
+                    self.__study_action()
+                
+                elif intent == 'charge my phone': #charge my phone to AI
+                    self.__phonecharge_action()
+                
+                elif intent == 'charge my laptop': #charge my laptop to AI
+                    self.__laptopcharge_action()
+          
                 else: # No recognized intent
                     #self.__text_action("I'm sorry, I don't know about that yet.")
                     return
@@ -180,23 +200,31 @@ class Bot(object):
         GPIO.output(lamp_gpio, GPIO.LOW)
         GPIO.output(charger_gpio, GPIO.LOW)
         GPIO.output(toaster_gpio, GPIO.LOW)
+        GPIO.output(f, GPIO.LOW)
+        GPIO.output(g, GPIO.LOW)
+        GPIO.output(laptop_charger_gpio, GPIO.LOW)
         
         
 
     #FAN
     def __fan_on_action(self):
         print("Fan is on!")
+        GPIO.output(fan_gpio, GPIO.LOW)
+        
 
     def __fan_off_action(self):
         print("Fan is off!")
+        GPIO.output(fan_gpio, GPIO.HIGH)
 
 
     #Lights
     def __lights_on_action(self):
         print("Lights on!")
+        GPIO.output(light_gpio, GPIO.LOW)
 
     def __lights_off_action(self):
         print("Lights off!")
+        GPIO.output(light_gpio, GPIO.HIGH)
 
 
     #Dimmer
@@ -212,18 +240,72 @@ class Bot(object):
     def __dim_full_action(self):
         print("Dimmer full!")
 
+        
     #Good morning
     def __good_morning_action(self):
         print("Good morning!")
-
+        GPIO.output(fan_gpio, GPIO.LOW)     #Fan On
+        GPIO.output(toaster_gpio, GPIO.LOW)    #Toaster On
+        GPIO.output(light_gpio, GPIO.HIGH)  #lights off
+        #dimmer to zero
+        
     #Good night
     def __good_night_action(self):
         print("Good night!")
+        GPIO.output(fan_gpio, GPIO.LOW)     #Fan On
+        GPIO.output(light_gpio, GPIO.HIGH)  #everything off
+        GPIO.output(lamp_gpio, GPIO.HIGH)
+        GPIO.output(charger_gpio, GPIO.HIGH)
+        GPIO.output(toaster_gpio, GPIO.HIGH)
+        GPIO.output(f, GPIO.LOW)            #dimmer on to 5%
+        GPIO.output(g, GPIO.HIGH)
+        GPIO.output(laptop_charger_gpio, GPIO.HIGH)
+       
 
     #Goodbye
     def __goodbye_action(self):
         print("Good bye!")
-
+        GPIO.output(fan_gpio, GPIO.HIGH)    #everything off
+        GPIO.output(light_gpio, GPIO.HIGH)
+        GPIO.output(lamp_gpio, GPIO.HIGH)
+        GPIO.output(charger_gpio, GPIO.HIGH)
+        GPIO.output(toaster_gpio, GPIO.HIGH)
+        GPIO.output(f, GPIO.HIGH)
+        GPIO.output(g, GPIO.HIGH)
+        GPIO.output(laptop_charger_gpio, GPIO.HIGH)
+   
+    #Studytime
+    def __study_action(self):
+        print("Good morning!")
+        GPIO.output(lamp_gpio, GPIO.LOW) #lamp on
+        GPIO.output(fan_gpio, GPIO.LOW)  #Fan on
+        #Dimmer Low
+        GPIO.output(laptop_charger_gpio, GPIO.LOW)  #laptop charger on
+        pygame.mixer.init()
+        pygame.mixer.music.load("thunder.mp3")                                                          #change file to some other good mp3
+        pygame.mixer.music.play()                   #play soothing music to help concentration
+        
+    #I'm home
+    def __iamhome_action(self):
+        print("Welcome home!")
+        GPIO.output(fan_gpio, GPIO.LOW)     #fan on
+        GPIO.output(light_gpio, GPIO.LOW)   #lights on
+        GPIO.output(f, GPIO.LOW) #Turn Dimmer on
+        GPIO.output(g, GPIO.LOW)
+        pygame.mixer.init()
+        pygame.mixer.music.load("thunder.mp3")                                                          #change file to some highway to hell  mp3
+        pygame.mixer.music.play()                   #play welcome music
+    
+    #Charge my phone
+    def __phonecharge_action(self):
+        print("Charging your Phone!")
+        GPIO.output(charger_gpio, GPIO.LOW)
+    
+    #Charge my laptop
+    def __laptopcharge_action(self):
+        print("Charging your Phone!")
+        GPIO.output(laptop_charger_gpio, GPIO.LOW)
+        
 
     def __music_action(self):
         text = "playing your morning playlist"
