@@ -160,7 +160,7 @@ class Bot(object):
                 elif intent == 'charge my phone': #charge my phone to AI
                     self.__phonecharge_action()
                 
-                elif intent == 'charge my laptop': #charge my laptop to AI
+                elif intent == 'charge laptop': #charge my laptop to AI
                     self.__laptopcharge_action()
           
                 else: # No recognized intent
